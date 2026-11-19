@@ -4,47 +4,97 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Diet App – Setup Program</title>
-<meta name="color-scheme" content="light dark">
+<meta name="color-scheme" content="light">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.tailwindcss.com/3.4.17"></script>
 <style>
   :root {
-    --bg: #f0fdf4; --card: #ffffff; --text: #14231a; --muted: #5b6b61;
-    --border: #d4e4d9; --accent: #16a34a; --accent-text: #ffffff; --soft: #dcfce7;
-    --err-bg: #fef2f2; --err-text: #b91c1c; --err-border: #fca5a5;
+    --primary: #059669;
+    --primary-hover: #047857;
+    --secondary: #10B981;
+    --tertiary: #F97316;
+    --neutral: #0F172A;
+    --bg: #F8FAFC;
+    --card: #FFFFFF;
+    --text: #0F172A;
+    --muted: #475569;
+    --border: #E2E8F0;
+    --soft: #ECFDF5;
+    --soft-text: #065F46;
+    --err-bg: #FEF2F2;
+    --err-text: #B91C1C;
+    --err-border: #FCA5A5;
     box-sizing: border-box;
     padding-top: env(safe-area-inset-top, 0px);
     padding-bottom: env(safe-area-inset-bottom, 0px);
   }
-  @media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) {
-      --bg: #0c1a12; --card: #13261b; --text: #e8f5ec; --muted: #9db3a5;
-      --border: #28402f; --accent: #4ade80; --accent-text: #052e16; --soft: #14532d;
-      --err-bg: #3b1212; --err-text: #fca5a5; --err-border: #7f1d1d;
-      color-scheme: dark;
-    }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    min-height: 100vh;
   }
-  :root[data-theme="dark"] {
-    --bg: #0c1a12; --card: #13261b; --text: #e8f5ec; --muted: #9db3a5;
-    --border: #28402f; --accent: #4ade80; --accent-text: #052e16; --soft: #14532d;
-    --err-bg: #3b1212; --err-text: #fca5a5; --err-border: #7f1d1d;
-    color-scheme: dark;
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
   }
-  body { background: var(--bg); color: var(--text); font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; min-height: 100vh; }
-  .card { background: var(--card); border: 1px solid var(--border); }
-  .input { background: var(--bg); border: 1px solid var(--border); color: var(--text); }
-  .input:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
-  .input.invalid { border-color: var(--err-text); }
-  .btn { background: var(--accent); color: var(--accent-text); }
-  .btn-ghost { background: transparent; color: var(--accent); border: 1px solid var(--accent); }
-  .muted { color: var(--muted); }
-  .soft { background: var(--soft); }
-  .err { background: var(--err-bg); color: var(--err-text); border: 1px solid var(--err-border); }
+  .input {
+    background: #FFFFFF;
+    border: 1px solid #CBD5E1;
+    color: var(--neutral);
+  }
+  .input:focus {
+    outline: 2px solid var(--primary);
+    outline-offset: 1px;
+    border-color: var(--primary);
+  }
+  .input.invalid {
+    border-color: var(--err-text);
+    background: #FFFDFD;
+  }
+  .btn {
+    background: var(--primary);
+    color: #FFFFFF;
+  }
+  .btn:hover {
+    background: var(--primary-hover);
+  }
+  .btn-ghost {
+    background: #FFFFFF;
+    color: var(--primary);
+    border: 1.5px solid var(--primary);
+  }
+  .btn-ghost:hover {
+    background: var(--soft);
+  }
+  .muted {
+    color: var(--muted);
+  }
+  .soft {
+    background: var(--soft);
+    color: var(--soft-text);
+  }
+  .badge-secondary {
+    background: #D1FAE5;
+    color: #065F46;
+    border: 1px solid var(--secondary);
+  }
+  .accent-tertiary {
+    color: var(--tertiary);
+  }
+  .err {
+    background: var(--err-bg);
+    color: var(--err-text);
+    border: 1px solid var(--err-border);
+  }
 </style>
 </head>
 <body>
 <main class="mx-auto w-full max-w-md px-4 py-6">
   <header class="mb-5">
-    <h1 class="text-2xl font-bold">🥗 Diet App</h1>
+    <h1 class="text-2xl font-bold tracking-tight" style="color: var(--neutral);">🥗 Diet App</h1>
     <p class="muted text-sm">Atur program dietmu dan pantau targetnya.</p>
   </header>
 
@@ -52,24 +102,33 @@
   <section id="summary" class="card hidden rounded-2xl p-5 shadow-sm" aria-live="polite">
     <div class="flex items-center justify-between">
       <h2 class="text-lg font-semibold">Program Aktif</h2>
-      <span class="soft rounded-full px-3 py-1 text-xs font-medium">Aktif</span>
+      <span class="badge-secondary rounded-full px-3 py-1 text-xs font-semibold">Aktif</span>
     </div>
-    <p class="muted mt-1 text-sm">Halo, <strong id="s-name" style="color:var(--text)"></strong>! Ini ringkasan programmu.</p>
+    <p class="muted mt-1 text-sm">Halo, <strong id="s-name" style="color: var(--neutral);"></strong>! Ini ringkasan programmu.</p>
 
     <div class="soft mt-4 rounded-xl p-4 text-center">
-      <p class="muted text-xs uppercase tracking-wide">Selisih menuju target</p>
-      <p id="s-diff" class="mt-1 text-3xl font-bold"></p>
+      <p class="text-xs font-semibold uppercase tracking-wide" style="color: var(--primary);">Selisih menuju target</p>
+      <p id="s-diff" class="mt-1 text-3xl font-bold" style="color: var(--neutral);"></p>
       <p id="s-diff-note" class="muted mt-1 text-sm"></p>
     </div>
 
     <dl class="mt-4 grid grid-cols-3 gap-3 text-center">
-      <div><dt class="muted text-xs">Berat awal</dt><dd id="s-start" class="font-semibold"></dd></div>
-      <div><dt class="muted text-xs">Target</dt><dd id="s-target" class="font-semibold"></dd></div>
-      <div><dt class="muted text-xs">Durasi</dt><dd id="s-weeks" class="font-semibold"></dd></div>
+      <div class="rounded-xl border border-slate-100 bg-slate-50 p-2.5">
+        <dt class="muted text-xs">Berat awal</dt>
+        <dd id="s-start" class="mt-0.5 font-semibold"></dd>
+      </div>
+      <div class="rounded-xl border border-slate-100 bg-slate-50 p-2.5">
+        <dt class="muted text-xs">Target</dt>
+        <dd id="s-target" class="mt-0.5 font-semibold"></dd>
+      </div>
+      <div class="rounded-xl border border-slate-100 bg-slate-50 p-2.5">
+        <dt class="muted text-xs">Durasi</dt>
+        <dd id="s-weeks" class="mt-0.5 font-semibold"></dd>
+      </div>
     </dl>
-    <p id="s-pace" class="muted mt-4 text-center text-sm"></p>
+    <p id="s-pace" class="accent-tertiary mt-4 text-center text-sm font-medium"></p>
 
-    <button id="btn-edit" type="button" class="btn-ghost mt-5 w-full rounded-xl py-3 font-semibold">Ubah Program</button>
+    <button id="btn-edit" type="button" class="btn-ghost mt-5 w-full rounded-xl py-3 font-semibold transition">Ubah Program</button>
   </section>
 
   <!-- Form Setup -->
@@ -96,8 +155,8 @@
         <input id="weeks" type="number" inputmode="numeric" step="1" placeholder="Contoh: 12" class="input w-full rounded-xl px-3 py-3 text-base">
       </div>
       <div class="flex gap-3 pt-1">
-        <button id="btn-cancel" type="button" class="btn-ghost hidden w-1/3 rounded-xl py-3 font-semibold">Batal</button>
-        <button type="submit" class="btn flex-1 rounded-xl py-3 font-semibold">Simpan Program</button>
+        <button id="btn-cancel" type="button" class="btn-ghost hidden w-1/3 rounded-xl py-3 font-semibold transition">Batal</button>
+        <button type="submit" class="btn flex-1 rounded-xl py-3 font-semibold transition">Simpan Program</button>
       </div>
     </form>
   </section>
@@ -164,7 +223,7 @@
   }
 
   function renderSummary(d) {
-    var diff = d.start - d.target; // positif = perlu turun
+    var diff = d.start - d.target;
     var abs = Math.abs(diff);
     $("s-name").textContent = d.name;
     $("s-start").textContent = fmt(d.start) + " kg";
@@ -219,7 +278,6 @@
     if (d) renderSummary(d);
   });
 
-  // Muat data tersimpan saat halaman dibuka / di-refresh
   var saved = load();
   if (saved) renderSummary(saved);
 })();
