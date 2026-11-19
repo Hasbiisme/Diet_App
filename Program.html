@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Diet App – Setup Program</title>
+<meta name="color-scheme" content="light dark">
+<script src="https://cdn.tailwindcss.com/3.4.17"></script>
+<style>
+  :root {
+    --bg: #f0fdf4; --card: #ffffff; --text: #14231a; --muted: #5b6b61;
+    --border: #d4e4d9; --accent: #16a34a; --accent-text: #ffffff; --soft: #dcfce7;
+    --err-bg: #fef2f2; --err-text: #b91c1c; --err-border: #fca5a5;
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0c1a12; --card: #13261b; --text: #e8f5ec; --muted: #9db3a5;
+      --border: #28402f; --accent: #4ade80; --accent-text: #052e16; --soft: #14532d;
+      --err-bg: #3b1212; --err-text: #fca5a5; --err-border: #7f1d1d;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0c1a12; --card: #13261b; --text: #e8f5ec; --muted: #9db3a5;
+    --border: #28402f; --accent: #4ade80; --accent-text: #052e16; --soft: #14532d;
+    --err-bg: #3b1212; --err-text: #fca5a5; --err-border: #7f1d1d;
+    color-scheme: dark;
+  }
+  body { background: var(--bg); color: var(--text); font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; min-height: 100vh; }
+  .card { background: var(--card); border: 1px solid var(--border); }
+  .input { background: var(--bg); border: 1px solid var(--border); color: var(--text); }
+  .input:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+  .input.invalid { border-color: var(--err-text); }
+  .btn { background: var(--accent); color: var(--accent-text); }
+  .btn-ghost { background: transparent; color: var(--accent); border: 1px solid var(--accent); }
+  .muted { color: var(--muted); }
+  .soft { background: var(--soft); }
+  .err { background: var(--err-bg); color: var(--err-text); border: 1px solid var(--err-border); }
+</style>
+</head>
+<body>
+<main class="mx-auto w-full max-w-md px-4 py-6">
+  <header class="mb-5">
+    <h1 class="text-2xl font-bold">🥗 Diet App</h1>
+    <p class="muted text-sm">Atur program dietmu dan pantau targetnya.</p>
+  </header>
+
+  <!-- Kartu Ringkasan Program Aktif -->
+  <section id="summary" class="card hidden rounded-2xl p-5 shadow-sm" aria-live="polite">
+    <div class="flex items-center justify-between">
+      <h2 class="text-lg font-semibold">Program Aktif</h2>
+      <span class="soft rounded-full px-3 py-1 text-xs font-medium">Aktif</span>
+    </div>
+    <p class="muted mt-1 text-sm">Halo, <strong id="s-name" style="color:var(--text)"></strong>! Ini ringkasan programmu.</p>
+
+    <div class="soft mt-4 rounded-xl p-4 text-center">
+      <p class="muted text-xs uppercase tracking-wide">Selisih menuju target</p>
+      <p id="s-diff" class="mt-1 text-3xl font-bold"></p>
+      <p id="s-diff-note" class="muted mt-1 text-sm"></p>
+    </div>
+
+    <dl class="mt-4 grid grid-cols-3 gap-3 text-center">
+      <div><dt class="muted text-xs">Berat awal</dt><dd id="s-start" class="font-semibold"></dd></div>
+      <div><dt class="muted text-xs">Target</dt><dd id="s-target" class="font-semibold"></dd></div>
+      <div><dt class="muted text-xs">Durasi</dt><dd id="s-weeks" class="font-semibold"></dd></div>
+    </dl>
+    <p id="s-pace" class="muted mt-4 text-center text-sm"></p>
+
+    <button id="btn-edit" type="button" class="btn-ghost mt-5 w-full rounded-xl py-3 font-semibold">Ubah Program</button>
+  </section>
+
+  <!-- Form Setup -->
+  <section id="setup" class="card rounded-2xl p-5 shadow-sm">
+    <h2 id="form-title" class="text-lg font-semibold">Setup Program Diet</h2>
+
+    <div id="errors" class="err mt-4 hidden rounded-xl p-3 text-sm" role="alert"></div>
+
+    <form id="form" class="mt-4 space-y-4" novalidate>
+      <div>
+        <label for="name" class="mb-1 block text-sm font-medium">Nama / Panggilan</label>
+        <input id="name" type="text" autocomplete="nickname" placeholder="Contoh: Budi" class="input w-full rounded-xl px-3 py-3 text-base">
+      </div>
+      <div>
+        <label for="start" class="mb-1 block text-sm font-medium">Berat Badan Awal (kg)</label>
+        <input id="start" type="number" inputmode="decimal" step="0.1" placeholder="Contoh: 80" class="input w-full rounded-xl px-3 py-3 text-base">
+      </div>
+      <div>
+        <label for="target" class="mb-1 block text-sm font-medium">Target Berat Badan (kg)</label>
+        <input id="target" type="number" inputmode="decimal" step="0.1" placeholder="Contoh: 70" class="input w-full rounded-xl px-3 py-3 text-base">
+      </div>
+      <div>
+        <label for="weeks" class="mb-1 block text-sm font-medium">Durasi Program (minggu)</label>
+        <input id="weeks" type="number" inputmode="numeric" step="1" placeholder="Contoh: 12" class="input w-full rounded-xl px-3 py-3 text-base">
+      </div>
+      <div class="flex gap-3 pt-1">
+        <button id="btn-cancel" type="button" class="btn-ghost hidden w-1/3 rounded-xl py-3 font-semibold">Batal</button>
+        <button type="submit" class="btn flex-1 rounded-xl py-3 font-semibold">Simpan Program</button>
+      </div>
+    </form>
+  </section>
+</main>
+
+<script>
+(function () {
+  var KEY = "dietApp.program.v1";
+  var $ = function (id) { return document.getElementById(id); };
+  var fields = { name: $("name"), start: $("start"), target: $("target"), weeks: $("weeks") };
+
+  function load() {
+    try {
+      var raw = localStorage.getItem(KEY);
+      if (!raw) return null;
+      var d = JSON.parse(raw);
+      if (d && d.name && d.start > 0 && d.target > 0 && d.weeks > 0) return d;
+    } catch (e) {}
+    return null;
+  }
+
+  function save(data) {
+    try { localStorage.setItem(KEY, JSON.stringify(data)); return true; }
+    catch (e) { return false; }
+  }
+
+  function fmt(n) {
+    return (Math.round(n * 10) / 10).toLocaleString("id-ID", { maximumFractionDigits: 1 });
+  }
+
+  function showErrors(list) {
+    var box = $("errors");
+    if (!list.length) { box.classList.add("hidden"); box.innerHTML = ""; return; }
+    box.innerHTML = "<p class='mb-1 font-semibold'>Data belum bisa disimpan:</p><ul class='list-disc pl-5'>" +
+      list.map(function (m) { return "<li>" + m + "</li>"; }).join("") + "</ul>";
+    box.classList.remove("hidden");
+  }
+
+  function mark(invalidKeys) {
+    Object.keys(fields).forEach(function (k) {
+      fields[k].classList.toggle("invalid", invalidKeys.indexOf(k) !== -1);
+    });
+  }
+
+  function validate() {
+    var errs = [], bad = [];
+    var name = fields.name.value.trim();
+    var sRaw = fields.start.value.trim(), tRaw = fields.target.value.trim(), wRaw = fields.weeks.value.trim();
+    var s = parseFloat(sRaw), t = parseFloat(tRaw), w = parseFloat(wRaw);
+
+    if (!name) { errs.push("Nama / Panggilan wajib diisi."); bad.push("name"); }
+
+    if (!sRaw) { errs.push("Berat Badan Awal wajib diisi."); bad.push("start"); }
+    else if (isNaN(s) || s <= 0) { errs.push("Berat Badan Awal harus lebih dari 0 kg."); bad.push("start"); }
+
+    if (!tRaw) { errs.push("Target Berat Badan wajib diisi."); bad.push("target"); }
+    else if (isNaN(t) || t <= 0) { errs.push("Target Berat Badan harus lebih dari 0 kg."); bad.push("target"); }
+
+    if (!wRaw) { errs.push("Durasi Program wajib diisi."); bad.push("weeks"); }
+    else if (isNaN(w) || w <= 0) { errs.push("Durasi Program harus lebih dari 0 minggu."); bad.push("weeks"); }
+    else if (!Number.isInteger(w)) { errs.push("Durasi Program harus berupa bilangan bulat (minggu)."); bad.push("weeks"); }
+
+    return { errs: errs, bad: bad, data: { name: name, start: s, target: t, weeks: w } };
+  }
+
+  function renderSummary(d) {
+    var diff = d.start - d.target; // positif = perlu turun
+    var abs = Math.abs(diff);
+    $("s-name").textContent = d.name;
+    $("s-start").textContent = fmt(d.start) + " kg";
+    $("s-target").textContent = fmt(d.target) + " kg";
+    $("s-weeks").textContent = d.weeks + " minggu";
+
+    if (diff > 0) {
+      $("s-diff").textContent = "Turun " + fmt(abs) + " kg";
+      $("s-diff-note").textContent = "dari " + fmt(d.start) + " kg ke " + fmt(d.target) + " kg";
+    } else if (diff < 0) {
+      $("s-diff").textContent = "Naik " + fmt(abs) + " kg";
+      $("s-diff-note").textContent = "dari " + fmt(d.start) + " kg ke " + fmt(d.target) + " kg";
+    } else {
+      $("s-diff").textContent = "0 kg";
+      $("s-diff-note").textContent = "Target sama dengan berat awal: pertahankan berat badanmu.";
+    }
+    $("s-pace").textContent = abs > 0
+      ? "Rata-rata sekitar " + fmt(abs / d.weeks) + " kg per minggu."
+      : "";
+
+    $("summary").classList.remove("hidden");
+    $("setup").classList.add("hidden");
+  }
+
+  function showForm(prefill) {
+    var d = prefill || { name: "", start: "", target: "", weeks: "" };
+    fields.name.value = d.name; fields.start.value = d.start;
+    fields.target.value = d.target; fields.weeks.value = d.weeks;
+    $("form-title").textContent = prefill ? "Ubah Program Diet" : "Setup Program Diet";
+    $("btn-cancel").classList.toggle("hidden", !prefill);
+    showErrors([]); mark([]);
+    $("summary").classList.add("hidden");
+    $("setup").classList.remove("hidden");
+    fields.name.focus();
+  }
+
+  $("form").addEventListener("submit", function (e) {
+    e.preventDefault();
+    var r = validate();
+    if (r.errs.length) { showErrors(r.errs); mark(r.bad); return; }
+    if (!save(r.data)) {
+      showErrors(["Penyimpanan di browser tidak tersedia, jadi data tidak dapat disimpan."]);
+      return;
+    }
+    showErrors([]); mark([]);
+    renderSummary(r.data);
+  });
+
+  $("btn-edit").addEventListener("click", function () { showForm(load()); });
+  $("btn-cancel").addEventListener("click", function () {
+    var d = load();
+    if (d) renderSummary(d);
+  });
+
+  // Muat data tersimpan saat halaman dibuka / di-refresh
+  var saved = load();
+  if (saved) renderSummary(saved);
+})();
+</script>
+</body>
+</html>
